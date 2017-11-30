@@ -20,6 +20,7 @@ using namespace std;
 
 #include <vector>
 
+
 int easterReport ( const char * years, const char * outFileName )
  {
      ofstream ofs;
@@ -76,6 +77,99 @@ int easterReport ( const char * years, const char * outFileName )
          std::cout  <<  pole[k] <<  " ";
      }
      std::cout <<   std::endl;
+     int a, b, c, d, e, f, g, h, i, k, l, m, n, p, pom;
+     /* 1)Y vydělíme 19 a získáme podíl (ten ignorujeme) a zbytek po dělení označíme A. To je pozice roku v 19-letém
+            lunárním cyklu. (A+1 je tzv. Zlaté číslo)
+        2)Y vydělíme 100 a získáme podíl B a zbytek C
+        3)B vydělíme 4 a získáme podíl D a zbytek E
+        4)B + 8 vydělíme 25 a získáme podíl F
+        5)(B - F + 1) vydělíme 3 a získáme podíl G
+        6)19A + B – D – G + 15 vydělíme 30 a získáme podíl (ignorujeme) a zbytek H
+        7)C vydělíme 4 a získáme podíl I a zbytek K
+        8)(32 + 2E + 2I - H - K) vydělíme 7 a získáme podíl (ignorujeme) a zbytek L
+        9)(A + 11H + 22L) vydělíme 451 a získáme podíl M
+        10)(H + L - 7M + 114) vydělíme 31 a získáme podíl N a zbytek P.
+        11)Velikonoční neděle je (P+1)-tý den a N-tý měsíc (N=3 pro březen a N=4 pro duben) v roce Y.*/
+     std::string vystup="<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n"
+             "<html>\n"
+             "<head>\n"
+             "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
+             "<title>C++</title>\n"
+             "</head>\n"
+             "<body>\n"
+             "<table width=\"300\">\n"
+             "<tr><th width=\"99\">den</th><th width=\"99\">mesic</th><th width=\"99\">rok</th></tr>\n";
+
+     for (int l = 0; l < pole.size(); ++l) {
+         a=pole[i]%19;              //1
+
+         b=pole[i]/100;             //2
+         c=pole[i]%100;
+
+         d=b/4;                     //3
+         e=b%4;
+
+         f=(b+8)/3;                 //4
+
+         g=(b-f+1/3);               //5
+
+         h=(19*a+b-d+g+15)%30;      //6
+
+         i=c/4;                     //7
+         k=c%4;
+
+         l=(32+2*e +2*i-h-k)%7;     //8
+
+         m=(a+11*m+22*l)/451;       //9
+
+         n=(h+l-7*m+114)/31;        //10
+         p=(h+l-7*m+114)%31;
+
+         vystup+="<tr><td>";
+         vystup += std::to_string(p+1);
+        switch (n){
+            case 1:
+                vystup+="</td><td>leden</td><td>";
+                break;
+            case 2:
+                vystup+="</td><td>unor</td><td>";
+                break;
+            case 3:
+                vystup+="</td><td>brezen</td><td>";
+                break;
+            case 4:
+                vystup+="</td><td>duben</td><td>";
+                break;
+            case 5:
+                vystup+="</td><td>kveten</td><td>";
+                break;
+            case 6:
+                vystup+="</td><td>cerven</td><td>";
+                break;
+            case 7:
+                vystup+="</td><td>cervenec</td><td>";
+                break;
+            case 8:
+                vystup+="</td><td>srpen</td><td>";
+                break;
+            case 9:
+                vystup+="</td><td>zari</td><td>";
+                break;
+            case 10:
+                vystup+="</td><td>rijen</td><td>";
+                break;
+            case 11:
+                vystup+="</td><td>listopad</td><td>";
+                break;
+            case 12:
+                vystup+="</td><td>prosinec</td><td>";
+                break;
+            }
+         vystup+= std::to_string(pole[i]);
+         vystup+="</td></tr>\n";
+     }
+     vystup+="</table>\n</body>\n</html>";
+     std::cout  <<  vystup;
      return EASTER_OK;
  }
 
