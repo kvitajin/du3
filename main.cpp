@@ -20,10 +20,44 @@ using namespace std;
 
 #include <vector>
 
+int zapis(std::string &vystup, std::string &file){
+    int flag=0;
+    int i;
+    for (i = 0; i < file.size()-5; ++i) {
+        if ((file[i]>='A'&& file[i]<='Z') ||
+            (file[i]>='a'&& file[i]<='z') ||
+            (file[i]>='0'&& file[i]<='9') ||
+            file[i]=='\\'|| file[i]=='/' || file[i]=='.'){
+        }else ++flag;
+    }
+
+    /*for (int j = i; j < file.size(); ++j) {
+        std::cout   <<      file[j];
+    }*/
+
+    if(file[i]!='.' || file[++i]!='h' || file[++i]!='t' || file[++i]!='m' || file[++i]!='l'){
+        return EASTER_INVALID_FILENAME;
+    }
+    if (flag){
+        //std::cout <<    "flag"  << flag;
+        return EASTER_INVALID_FILENAME;
+    }
+
+    ofstream ofs;
+    ofs.open(file.c_str());
+    if(ofs){
+        ofs <<  vystup;
+        ofs.close();
+        return EASTER_OK;
+    } else{
+        return EASTER_IO_ERROR;
+    }
+
+}
 
 int easterReport ( const char * years, const char * outFileName )
  {
-     ofstream ofs;
+
      std::string roky=years;
      std::vector<int> pole;
      int tmp=0, pred=0, vymez=0;
@@ -49,11 +83,11 @@ int easterReport ( const char * years, const char * outFileName )
                  ++pred;
                  pole.push_back(pred);
              }
-             //pole.push_back(vymez);                                         //todo kontrolovat tady toto, jestli nezapisuju dvakrat posledni cislo
+             //pole.push_back(vymez);
              continue;
          }
          else if (isalpha(roky[i])){
-             std::cout <<   "pismeno " << i<<std::endl;
+             //std::cout <<   "pismeno " << i<<std::endl;
 
              return EASTER_INVALID_YEARS;
          }
@@ -67,29 +101,18 @@ int easterReport ( const char * years, const char * outFileName )
              tmp=0;
          }
          else if (tmp>2200 || (tmp>1000 && tmp<1582)){
-             std::cout <<   "mrdam na to spatny rok " << i<<std::endl;
+             //std::cout <<   "mrdam na to spatny rok " << i<<std::endl;
              //std::cout <<   "jsem zde " << tmp<<std::endl;
              return EASTER_INVALID_YEARS;
          }
      }
 
-     for (auto k = 0; k < pole.size(); ++k) {
+     /*for (auto k = 0; k < pole.size(); ++k) {
          std::cout  <<  pole[k] <<  " ";
      }
-     std::cout <<   std::endl;
-     int a, b, c, d, e, f, g, h, i, k, l, m, n, p, pom;
-     /* 1)Y vydělíme 19 a získáme podíl (ten ignorujeme) a zbytek po dělení označíme A. To je pozice roku v 19-letém
-            lunárním cyklu. (A+1 je tzv. Zlaté číslo)
-        2)Y vydělíme 100 a získáme podíl B a zbytek C
-        3)B vydělíme 4 a získáme podíl D a zbytek E
-        4)B + 8 vydělíme 25 a získáme podíl F
-        5)(B - F + 1) vydělíme 3 a získáme podíl G
-        6)19A + B – D – G + 15 vydělíme 30 a získáme podíl (ignorujeme) a zbytek H
-        7)C vydělíme 4 a získáme podíl I a zbytek K
-        8)(32 + 2E + 2I - H - K) vydělíme 7 a získáme podíl (ignorujeme) a zbytek L
-        9)(A + 11H + 22L) vydělíme 451 a získáme podíl M
-        10)(H + L - 7M + 114) vydělíme 31 a získáme podíl N a zbytek P.
-        11)Velikonoční neděle je (P+1)-tý den a N-tý měsíc (N=3 pro březen a N=4 pro duben) v roce Y.*/
+     std::cout <<   std::endl;*/
+     int a, b, c, d, e, f, g, h, i, k, l, m, n, p;
+
      std::string vystup="<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n"
              "<html>\n"
              "<head>\n"
@@ -99,8 +122,20 @@ int easterReport ( const char * years, const char * outFileName )
              "<body>\n"
              "<table width=\"300\">\n"
              "<tr><th width=\"99\">den</th><th width=\"99\">mesic</th><th width=\"99\">rok</th></tr>\n";
+     /* 1)Y vydělíme 19 a získáme podíl (ten ignorujeme) a zbytek po dělení označíme A. To je pozice roku v 19-letém
+            lunárním cyklu. (A+1 je tzv. Zlaté číslo)
+        2) Y vydělíme 100 a získáme podíl B a zbytek C
+        3) B vydělíme 4 a získáme podíl D a zbytek E
+        4) B + 8 vydělíme 25 a získáme podíl F
+        5) (B - F + 1) vydělíme 3 a získáme podíl G
+        6) 19A + B – D – G + 15 vydělíme 30 a získáme podíl (ignorujeme) a zbytek H
+        7) C vydělíme 4 a získáme podíl I a zbytek K
+        8) (32 + 2E + 2I - H - K) vydělíme 7 a získáme podíl (ignorujeme) a zbytek L
+        9) (A + 11H + 22L) vydělíme 451 a získáme podíl M
+        10)(H + L - 7M + 114) vydělíme 31 a získáme podíl N a zbytek P.
+        11)Velikonoční neděle je (P+1)-tý den a N-tý měsíc (N=3 pro březen a N=4 pro duben) v roce Y.*/
 
-     for (int z = 0; z < pole.size(); ++z) {        //todo mam tam dve L-ka
+     for (int z = 0; z < pole.size(); ++z) {
          a=pole[z]%19;              //1
 
          b=pole[z]/100;             //2
@@ -109,11 +144,11 @@ int easterReport ( const char * years, const char * outFileName )
          d=b/4;                     //3
          e=b%4;
 
-         f=(b+8)/3;                 //4
+         f=(b+8)/25;                 //4
 
-         g=(b-f+1/3);               //5
+         g=(b-f+1)/3;               //5
 
-         h=(19*a+b-d+g+15)%30;      //6
+         h=(19*a+b-d-g+15)%30;      //6
 
          i=c/4;                     //7
          k=c%4;
@@ -126,7 +161,7 @@ int easterReport ( const char * years, const char * outFileName )
          p=(h+l-7*m+114)%31;
 
          vystup+="<tr><td>";
-         vystup += std::to_string(p+1);
+         vystup += std::to_string((p+1));
         switch (n){
             case 1:
                 vystup+="</td><td>leden</td><td>";
@@ -164,26 +199,37 @@ int easterReport ( const char * years, const char * outFileName )
             case 12:
                 vystup+="</td><td>prosinec</td><td>";
                 break;
+            default:
+                break;
             }
          vystup+= std::to_string(pole[z]);
          vystup+="</td></tr>\n";
      }
      vystup+="</table>\n</body>\n</html>\n";
-     std::cout  <<  vystup;
+    // std::cout  <<  vystup;                             //todo smazat
+     std::string file=outFileName;
+
+     tmp=zapis(vystup, file);
+     return tmp;
      return EASTER_OK;
  }
 
 #ifndef __PROGTEST__
 int main ( int argc, char * argv[] )
- {
-     easterReport ( "2001 , 2002  ,  2003 ,2005,2006", "out2.html" );
+ {  int tmp;
+     tmp=easterReport ( "2001 , 2002  ,  2003 ,2005,2006", "oUt2.html" );
+     std::cout <<tmp<<std::endl;
      std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     easterReport ( "2000 - 2014", "out1.html" );
+     tmp=easterReport ( "2000 - 2014", "out1.html" );
+     std::cout <<tmp<<std::endl;
      std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     easterReport ( "2001 , 2002  ,  2003 ,2005,2006", "out2.html" );
+     tmp=easterReport ( "2001 , 2002  ,  2003 ,2005,2006", "out2.html" );
+     std::cout <<tmp<<std::endl;
      std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     easterReport ( "2000,2011,2010-2020", "out3.html" );
+     tmp=easterReport ( "2000,2011,2010-2020", "out3.html" );
+     std::cout <<tmp<<std::endl;
      std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     easterReport ( "2000-3000", "out4.html" );
+     tmp=easterReport ( "2000-3000", "out4.html" );
+     std::cout <<tmp<<std::endl;
  }
 #endif /* __PROGTEST__ */
