@@ -36,10 +36,10 @@ int easterReport ( const char * years, const char * outFileName )
              for (int j = 0; j < 4; ++j) {
                  ++i;
 
-                 if(roky[i]==' ')++i;
+                 while(roky[i]==' ')++i;
                  tmp*=10;
                  tmp+=roky[i]-48;
-                 //std::cout <<   "\t\t\t inside shit" << i<<  " "<<tmp<<std::endl;
+                 //std::cout    <<   "\t\t\t inside shit" << i<<  " "<<    tmp<<std::endl;
              }
              vymez=tmp;
              if (vymez>2200){
@@ -49,11 +49,11 @@ int easterReport ( const char * years, const char * outFileName )
                  ++pred;
                  pole.push_back(pred);
              }
-             pole.push_back(vymez);
+             //pole.push_back(vymez);                                         //todo kontrolovat tady toto, jestli nezapisuju dvakrat posledni cislo
              continue;
          }
          else if (isalpha(roky[i])){
-             std::cout <<   "mrdam na to pismeno " << i<<std::endl;
+             std::cout <<   "pismeno " << i<<std::endl;
 
              return EASTER_INVALID_YEARS;
          }
@@ -100,11 +100,11 @@ int easterReport ( const char * years, const char * outFileName )
              "<table width=\"300\">\n"
              "<tr><th width=\"99\">den</th><th width=\"99\">mesic</th><th width=\"99\">rok</th></tr>\n";
 
-     for (int l = 0; l < pole.size(); ++l) {
-         a=pole[i]%19;              //1
+     for (int z = 0; z < pole.size(); ++z) {        //todo mam tam dve L-ka
+         a=pole[z]%19;              //1
 
-         b=pole[i]/100;             //2
-         c=pole[i]%100;
+         b=pole[z]/100;             //2
+         c=pole[z]%100;
 
          d=b/4;                     //3
          e=b%4;
@@ -120,7 +120,7 @@ int easterReport ( const char * years, const char * outFileName )
 
          l=(32+2*e +2*i-h-k)%7;     //8
 
-         m=(a+11*m+22*l)/451;       //9
+         m=(a+11*h+22*l)/451;       //9
 
          n=(h+l-7*m+114)/31;        //10
          p=(h+l-7*m+114)%31;
@@ -165,10 +165,10 @@ int easterReport ( const char * years, const char * outFileName )
                 vystup+="</td><td>prosinec</td><td>";
                 break;
             }
-         vystup+= std::to_string(pole[i]);
+         vystup+= std::to_string(pole[z]);
          vystup+="</td></tr>\n";
      }
-     vystup+="</table>\n</body>\n</html>";
+     vystup+="</table>\n</body>\n</html>\n";
      std::cout  <<  vystup;
      return EASTER_OK;
  }
