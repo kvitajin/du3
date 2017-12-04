@@ -23,11 +23,15 @@ using namespace std;
 int zapis(std::string &vystup, std::string &file){
     int flag=0;
     int i;
-    for (i = 0; i < file.size()-5; ++i) {
-        if ((file[i]>='A'&& file[i]<='Z') ||
-            (file[i]>='a'&& file[i]<='z') ||
-            (file[i]>='0'&& file[i]<='9') ||
-            file[i]=='\\'|| file[i]=='/' || file[i]=='.'){
+    if (file.size()<6){
+        return EASTER_INVALID_FILENAME;
+    }
+    for (i = 0; i <(int)file.size()-5; ++i) {
+        if (!std::cin.fail()              &&
+            ((file[i]>='A'&& file[i]<='Z') ||
+             (file[i]>='a'&& file[i]<='z') ||
+             (file[i]>='0'&& file[i]<='9') ||
+              file[i]=='\\'|| file[i]=='/' || file[i]=='.')){
         }else ++flag;
     }
 
@@ -66,6 +70,9 @@ int easterReport ( const char * years, const char * outFileName )
          if (roky[i]==',' || roky[i]==' '){
              continue;
          }
+         else if (roky[i]=='-' && i<5){
+             return EASTER_INVALID_YEARS;
+         }
          else if (roky[i]=='-'){
              for (int j = 0; j < 4; ++j) {
                  ++i;
@@ -77,6 +84,9 @@ int easterReport ( const char * years, const char * outFileName )
              }
              vymez=tmp;
              if (vymez>2200){
+                 return EASTER_INVALID_YEARS;
+             }
+             if (vymez<pred){
                  return EASTER_INVALID_YEARS;
              }
              while (vymez!=pred){
@@ -135,7 +145,7 @@ int easterReport ( const char * years, const char * outFileName )
         10)(H + L - 7M + 114) vydělíme 31 a získáme podíl N a zbytek P.
         11)Velikonoční neděle je (P+1)-tý den a N-tý měsíc (N=3 pro březen a N=4 pro duben) v roce Y.*/
 
-     for (int z = 0; z < pole.size(); ++z) {
+     for (int z = 0; z < (int)pole.size(); ++z) {
          a=pole[z]%19;              //1
 
          b=pole[z]/100;             //2
@@ -163,41 +173,11 @@ int easterReport ( const char * years, const char * outFileName )
          vystup+="<tr><td>";
          vystup += std::to_string((p+1));
         switch (n){
-            case 1:
-                vystup+="</td><td>leden</td><td>";
-                break;
-            case 2:
-                vystup+="</td><td>unor</td><td>";
-                break;
             case 3:
                 vystup+="</td><td>brezen</td><td>";
                 break;
             case 4:
                 vystup+="</td><td>duben</td><td>";
-                break;
-            case 5:
-                vystup+="</td><td>kveten</td><td>";
-                break;
-            case 6:
-                vystup+="</td><td>cerven</td><td>";
-                break;
-            case 7:
-                vystup+="</td><td>cervenec</td><td>";
-                break;
-            case 8:
-                vystup+="</td><td>srpen</td><td>";
-                break;
-            case 9:
-                vystup+="</td><td>zari</td><td>";
-                break;
-            case 10:
-                vystup+="</td><td>rijen</td><td>";
-                break;
-            case 11:
-                vystup+="</td><td>listopad</td><td>";
-                break;
-            case 12:
-                vystup+="</td><td>prosinec</td><td>";
                 break;
             default:
                 break;
@@ -217,19 +197,26 @@ int easterReport ( const char * years, const char * outFileName )
 #ifndef __PROGTEST__
 int main ( int argc, char * argv[] )
  {  int tmp;
-     tmp=easterReport ( "2001 , 2002  ,  2003 ,2005,2006", "oUt2.html" );
+     tmp=easterReport ( "2001 , 2002  ,  2003 ,2005,2006", "a.html" );
      std::cout <<tmp<<std::endl;
      std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     tmp=easterReport ( "2000 - 2014", "out1.html" );
+     tmp=easterReport ( "2000-2001-", "out1.html" );
      std::cout <<tmp<<std::endl;
      std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
      tmp=easterReport ( "2001 , 2002  ,  2003 ,2005,2006", "out2.html" );
      std::cout <<tmp<<std::endl;
      std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     tmp=easterReport ( "2000,2011,2010-2020", "out3.html" );
+     tmp=easterReport ( "2000-2001-", "out3.html" );
      std::cout <<tmp<<std::endl;
      std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
      tmp=easterReport ( "2000-3000", "out4.html" );
      std::cout <<tmp<<std::endl;
+     std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
+     tmp=easterReport ( "-,", "out5.html" );
+     std::cout <<tmp<<std::endl;
+     std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
+     tmp=easterReport ( "2000 ,-", "out6.html" );
+     std::cout <<tmp<<std::endl;
+     std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
  }
 #endif /* __PROGTEST__ */
