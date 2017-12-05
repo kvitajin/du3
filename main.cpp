@@ -67,7 +67,16 @@ int easterReport ( const char * years, const char * outFileName )
      int tmp=0, pred=0, vymez=0;
      for (int i = 0; i < (int)roky.length(); ++i) {
          //std::cout <<   "jsem zde " << i<<  " "<<tmp<<std::endl;
-         if (roky[i]==',' || roky[i]==' '){
+         if (roky[i]==' '){
+             continue;
+         }
+         else if ((roky[i]==',' && tmp!=0)||(i==(int)roky.length() && tmp!=0)){
+             if (tmp<1582 || tmp>2200){
+                 //std::cout  <<"merde " << pred<<" "<<tmp<<std::endl;
+                 return EASTER_INVALID_YEARS;
+             }
+         }
+         else if (roky[i]==','){
              continue;
          }
          else if (roky[i]=='-' && i<5){
@@ -195,28 +204,26 @@ int easterReport ( const char * years, const char * outFileName )
  }
 
 #ifndef __PROGTEST__
-int main ( int argc, char * argv[] )
- {  int tmp;
-     tmp=easterReport ( "2001 , 2002  ,  2003 ,2005,2006", "a.html" );
-     std::cout <<tmp<<std::endl;
-     std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     tmp=easterReport ( "2000-2001-", "out1.html" );
-     std::cout <<tmp<<std::endl;
-     std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     tmp=easterReport ( "2001 , 2002  ,  2003 ,2005,2006", "out2.html" );
-     std::cout <<tmp<<std::endl;
-     std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     tmp=easterReport ( "2000-2001-", "out3.html" );
-     std::cout <<tmp<<std::endl;
-     std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     tmp=easterReport ( "2000-3000", "out4.html" );
-     std::cout <<tmp<<std::endl;
-     std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     tmp=easterReport ( "-,", "out5.html" );
-     std::cout <<tmp<<std::endl;
-     std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
-     tmp=easterReport ( "2000 ,-", "out6.html" );
-     std::cout <<tmp<<std::endl;
-     std::cout <<"-------------------------------------------------------------------------------"<<std::endl;
- }
+int main ( int argc, char * argv[] ) {
+    int tmp;
+
+    tmp = easterReport ( "2012,2013,2015-2020", "out0.html" );
+    std::cout << tmp << std::endl;
+    std::cout << "-------------------------------------------------------------------------------" << std::endl;
+    tmp = easterReport ( "2000 - 2014-", "out1.html" );
+    std::cout << tmp << std::endl;
+    std::cout << "-------------------------------------------------------------------------------" << std::endl;
+    tmp = easterReport ( "2001 , 2002 ,951 ,  2003 ,2005,2006", "out2.html" );
+    std::cout << tmp << std::endl;
+    std::cout << "-------------------------------------------------------------------------------" << std::endl;
+    tmp = easterReport("2000,2011,2010-2020", "out3.html");
+    std::cout << tmp << std::endl;
+    std::cout << "-------------------------------------------------------------------------------" << std::endl;
+    tmp = easterReport("", "out4.html");
+    std::cout << tmp << std::endl;
+    std::cout << "-------------------------------------------------------------------------------" << std::endl;
+
+    return 0;
+}
+
 #endif /* __PROGTEST__ */
